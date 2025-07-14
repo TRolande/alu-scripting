@@ -26,7 +26,7 @@ def top_ten(subreddit):
         print(None)
         return
 
-    # Reject redirects (invalid subreddit often returns 302)
+    # Reject redirects (invalid subreddit often returns 301/302)
     if response.status_code in (301, 302):
         print(None)
         return
