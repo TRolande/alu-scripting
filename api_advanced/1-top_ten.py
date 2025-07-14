@@ -1,45 +1,18 @@
 #!/usr/bin/python3
-"""
-Module to fetch and print the titles of the top 10 hot posts
-for a subreddit using the Reddit API.
-"""
-
+""" top_ten.py """
 import requests
 
 
 def top_ten(subreddit):
-    """Print the titles of the top 10 hot posts of a subreddit, or None on failure."""
-    url = f"https://www.reddit.com/r/{subreddit}/hot.json"
-    headers = {"User-Agent": "Python:top_ten_script:v1.0 (by /u/you)"}
-    params = {"limit": 10}
-
-    try:
-        response = requests.get(
-            url,
-            headers=headers,
-            params=params,
-            allow_redirects=False
-        )
-    except requests.RequestException:
+    """ prints the titles of the first 10 hot posts listed in a subreddit """
+    url = 'https://www.reddit.com/r/{}/hot.json?limit=10'.format(subreddit)
+    headers = {'User-Agent': 'Chrome/1.0'}
+    response = requests.get(url, headers=headers, allow_redirects=False)
+    # print(response)
+    print(response.text[189097:])
+    if response.status_code != 200:
         print(None)
-        return
-
-    if response.status_code in (301, 302) or response.status_code != 200:
-        print(None)
-        return
-
-    try:
-        posts = response.json().get("data", {}).get("children", [])
-    except ValueError:
-        print(None)
-        return
-
-    if not posts:
-        print(None)
-        return
-
-    for post in posts:
-        title = post.get("data", {}).get("title")
-        if title:
-            print(title)
-
+    else:
+        posts = response.json().get('data').get('children')
+        for post in posts:
+            print(post['data']['title'])
